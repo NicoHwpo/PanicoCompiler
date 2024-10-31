@@ -1,0 +1,47 @@
+programa patito;
+
+vars {
+    a, b, c : int; 
+    d, e, f : float;
+}
+
+void printNums(num1 : int, num2 :int){
+    print("el primer numero es: ", num1, (a+b));
+    print("el segundo numero es: ", num2);
+};
+
+void printSum(num1 : int, num2 : int){
+    vars{
+        aBigger : int;
+    }
+    b = 12 + -1;
+    
+    
+    if(a<b){
+        a = b;
+        aBigger = 0;
+    }else{
+        b = a;
+        aBigger = 1;
+    };
+    
+    
+    while(aBigger == 1){
+        a = a - 1;
+        if(a==b){
+            aBigger = 0;
+        };
+    };
+    
+    
+    printNums(a, b);
+    
+    print("se termina");
+};
+
+inicio{
+    a = 10;
+    b = 20;
+    printSum(a, b);
+
+}fin
