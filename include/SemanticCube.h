@@ -4,8 +4,7 @@
 
 #include <string>
 #include <unordered_map>
-
-enum Type { INT, FLOAT, ERROR }; // INT = 0, FLOAT = 1, ERROR = 2
+#include "Types.h"
 
 class SemanticCube {
 public:

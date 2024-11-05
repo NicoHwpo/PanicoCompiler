@@ -6,7 +6,7 @@ SemanticCube::SemanticCube() {
 }
 
 void SemanticCube::initializeCube() {
-    // 0 = INT, 1 = FLOAT, 2 = ERROR
+    // 0 = INT, 1 = FLOAT
     // additions
     cube["0+0"] = INT;
     cube["0+1"] = FLOAT;
