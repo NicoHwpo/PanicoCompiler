@@ -58,7 +58,7 @@ asigna: ID IGUAL expresion PUNTOYCOMA;
 expresion: exp ((MAYORQUE | MENORQUE | DIFERENTE | IGUALIGUAL) exp)?;
 exp: termino ((MAS | MENOS) termino)*;
 termino: factor ((MULT | DIV) factor)*;
-factor: PARENIZQ expresion PARENDER | (MAS | MENOS)? (ID | cte);
+factor: PARENIZQ expresion PARENDER | MENOS? (ID | cte);
 cte: CTE_ENT | CTE_FLOT;
 
 condicion: IF PARENIZQ expresion PARENDER LLAVEIZQ cuerpo LLAVEDER (ELSE LLAVEIZQ cuerpo LLAVEDER)? PUNTOYCOMA;

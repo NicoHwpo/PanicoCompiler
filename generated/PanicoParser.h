@@ -313,7 +313,6 @@ public:
     antlr4::tree::TerminalNode *PARENDER();
     antlr4::tree::TerminalNode *ID();
     CteContext *cte();
-    antlr4::tree::TerminalNode *MAS();
     antlr4::tree::TerminalNode *MENOS();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
