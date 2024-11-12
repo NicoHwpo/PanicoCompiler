@@ -10,7 +10,7 @@ void printNums(num1 : int, num2 :int){
     print("el segundo numero es: ", num2);
 };
 
-void printSum(num1 : int, num2 : int){
+void printSum(num3 : int, num4 : int){
     vars{
         aBigger : int;
     }
