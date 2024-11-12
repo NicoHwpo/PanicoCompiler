@@ -10,20 +10,17 @@
 struct VariableInfo {
     std::string name;
     Type type;
+    int memoryAddress = -1;
 };
 
 class VariableTable {
 public:
-    VariableTable() { enterScope(); }
-
-    void enterScope();
-    void exitScope();
-    
     bool addVariable(const std::string &name, Type type);
-    VariableInfo* getVariable(const std::string &name);
+    VariableInfo *getVariableInfo(const std::string &name);
+    std::unordered_map<std::string, VariableInfo> getVariables() const { return variables; }
 
 private:
-    std::vector<std::unordered_map<std::string, VariableInfo>> scopes;
+    std::unordered_map<std::string, VariableInfo> variables;
 };
 
 #endif // VARIABLE_TABLE_H

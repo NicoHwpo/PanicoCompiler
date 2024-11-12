@@ -50,7 +50,17 @@ void SemanticCube::initializeCube() {
     cube["1!=1"] = INT;
 }
 
-Type SemanticCube::getResultType(Type type1, Type type2, const std::string &op) {
+Type SemanticCube::getResultType(Type &type1, Type &type2, const std::string &op) {
     std::string key = std::to_string(type1) + op + std::to_string(type2);
     return cube.count(key) ? cube[key] : ERROR;
+}
+
+Type SemanticCube::getTypeFromString(const std::string &type) {
+    if (type == "int") {
+        return INT;
+    } else if (type == "float") {
+        return FLOAT;
+    } else {
+        return ERROR;
+    }
 }
