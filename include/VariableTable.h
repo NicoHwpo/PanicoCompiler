@@ -17,7 +17,7 @@ class VariableTable {
 public:
     bool addVariable(const std::string &name, Type type);
     VariableInfo *getVariableInfo(const std::string &name);
-    std::unordered_map<std::string, VariableInfo> getVariables() const { return variables; }
+    std::unordered_map<std::string, VariableInfo> *getVariables();
 
 private:
     std::unordered_map<std::string, VariableInfo> variables;
