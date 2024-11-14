@@ -11,7 +11,7 @@
 struct FunctionInfo {
     std::string name;
     Type returnType;
-    std::unordered_map<std::string, VariableInfo> parameters;
+    VariableTable parametersTable;
     VariableTable variableTable;
     int startAddress = -1;
 };
@@ -20,11 +20,16 @@ class FunctionDirectory {
 public:
     bool addFunction(const std::string &name,Type returnType);
     FunctionInfo *getFunctionInfo(const std::string &name);
-    std::unordered_map<std::string, FunctionInfo> getDirectory() const { return directory; }
-    FunctionInfo *getCurrentFunction() { return currentFunction; }
-    bool addParameter(const std::string &name, Type type);
-    void setMainFunction(FunctionInfo *function) { mainFunction = function; }
-    FunctionInfo *getMainFunction() { return mainFunction; }
+    std::unordered_map<std::string, FunctionInfo> *getFunctionDirectory();
+    FunctionInfo *getCurrentFunction();
+
+    void setMainFunction(FunctionInfo *function);
+    FunctionInfo *getMainFunction();
+
+    bool addParameterToCurFunc(const std::string &name, Type type);
+    bool addVariableToCurFunc(const std::string &name, Type type);
+    VariableInfo *getVarInfoFuncScope(const std::string &name);
+    VariableInfo *getVarInFuncOrGlobalScope(const std::string &name);
     
 private:
     FunctionInfo *mainFunction = nullptr;
