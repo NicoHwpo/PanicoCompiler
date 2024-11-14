@@ -29,25 +29,25 @@ void SemanticCube::initializeCube() {
     cube["1/1"] = FLOAT;
     // comparisons
         // less than
-    cube["0<0"] = INT;
-    cube["0<1"] = INT;
-    cube["1<0"] = INT;
-    cube["1<1"] = INT;
+    cube["0<0"] = BOOL;
+    cube["0<1"] = BOOL;
+    cube["1<0"] = BOOL;
+    cube["1<1"] = BOOL;
         // greater than
-    cube["0>0"] = INT;
-    cube["0>1"] = INT;
-    cube["1>0"] = INT;
-    cube["1>1"] = INT;
+    cube["0>0"] = BOOL;
+    cube["0>1"] = BOOL;
+    cube["1>0"] = BOOL;
+    cube["1>1"] = BOOL;
         // equal to
-    cube["0==0"] = INT;
-    cube["0==1"] = INT;
-    cube["1==0"] = INT;
-    cube["1==1"] = INT;
+    cube["0==0"] = BOOL;
+    cube["0==1"] = BOOL;
+    cube["1==0"] = BOOL;
+    cube["1==1"] = BOOL;
         // not equal to
-    cube["0!=0"] = INT;
-    cube["0!=1"] = INT;
-    cube["1!=0"] = INT;
-    cube["1!=1"] = INT;
+    cube["0!=0"] = BOOL;
+    cube["0!=1"] = BOOL;
+    cube["1!=0"] = BOOL;
+    cube["1!=1"] = BOOL;
 }
 
 Type SemanticCube::getResultType(Type &type1, Type &type2, const std::string &op) {

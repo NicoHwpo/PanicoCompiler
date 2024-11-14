@@ -6,7 +6,8 @@ enum Type {
     INT,
     FLOAT,
     VOID,
-    ERROR
+    ERROR,
+    BOOL
 };
 
 #endif // TYPES_H

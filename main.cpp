@@ -107,8 +107,7 @@ public:
             // visit the right operand
             visit(ctx->exp(1));
             // pop the relational operator from the operator stack
-            std::string relationalOp = operatorStack.top();
-            operatorStack.pop();
+            std::string relationalOp = operatorStack.top(); operatorStack.pop();
             std::string rightOperand = operandStack.top(); operandStack.pop();
             std::string leftOperand = operandStack.top(); operandStack.pop();
 
@@ -261,6 +260,13 @@ public:
         // visit the expression
         visit(ctx->expresion());
         std::string result = operandStack.top(); operandStack.pop();
+        // check type of the expression
+        Type resultType = typeStack.top(); typeStack.pop();
+        if (resultType != BOOL) {
+            std::cerr << "Condition must be of type bool." << std::endl;
+            return nullptr;
+        }
+
         // generate quadruple to jump if false and push the jump label
         int gotofQuadIndex = quadruples.size();
         generateQuadruple("GOTOF", result, "nil", "pending");
@@ -285,13 +291,20 @@ public:
         quadruples[exitAddress].result = std::to_string(quadruples.size());
         return nullptr;
     }
-        
+
     antlrcpp::Any visitCiclo(PanicoParser::CicloContext *ctx) override {
         // save the current quadruple index
         int startAddress = quadruples.size();
-        // evaluate the loop condition and gen the GOTOF quad
+        // evaluate the loop condition
         visit(ctx->expresion());
         std::string result = operandStack.top(); operandStack.pop();
+        // check type of the expression
+        Type resultType = typeStack.top(); typeStack.pop();
+        if (resultType != BOOL) {
+            std::cerr << "Condition must be of type bool." << std::endl;
+            return nullptr;
+        }
+        // gen the GOTOF quad
         int gotofQuadIndex = quadruples.size();
         generateQuadruple("GOTOF", result, "nil", "pending");
         // push the jump target to the jump stack
@@ -359,19 +372,20 @@ int main(int argc, const char* argv[]) {
     PanicoParser parser(&tokens);
     antlr4::tree::ParseTree *tree = parser.programa();
 
-    // Generate the parse tree to visualize it
-    std::ofstream out("parseTree.dot");
-    out << antlr4::tree::Trees::toStringTree(tree, &parser, true) << std::endl;
-    out.close();
-
-
     // Print the parse tree (for debugging)
-    std::cout << tree->toStringTree(&parser) << std::endl;
+    // std::cout << tree->toStringTree(&parser) << std::endl;
 
     // Visit the parse tree with our custom visitor
     CustomVisitor visitor;
     visitor.visit(tree);
 
+    // Print all variables in each function
+    // printFunctionDirectory(visitor.functionDirectory);
+
+    // print quadruples
+    printQuadruples(visitor.quadruples);
+
+    
     return 0;
 }
 
