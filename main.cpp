@@ -281,11 +281,30 @@ public:
             visit(ctx->cuerpo(1));
         }
         // fill the final jump target
-        int endAddress = jumpStack.top(); jumpStack.pop();
-        quadruples[endAddress].result = std::to_string(quadruples.size());
+        int exitAddress = jumpStack.top(); jumpStack.pop();
+        quadruples[exitAddress].result = std::to_string(quadruples.size());
         return nullptr;
     }
         
+    antlrcpp::Any visitCiclo(PanicoParser::CicloContext *ctx) override {
+        // save the current quadruple index
+        int startAddress = quadruples.size();
+        // evaluate the loop condition and gen the GOTOF quad
+        visit(ctx->expresion());
+        std::string result = operandStack.top(); operandStack.pop();
+        int gotofQuadIndex = quadruples.size();
+        generateQuadruple("GOTOF", result, "nil", "pending");
+        // push the jump target to the jump stack
+        jumpStack.push(gotofQuadIndex);
+        // visit the loop body
+        visit(ctx->cuerpo());
+        // generate the GOTO quad to return to the loop condition
+        generateQuadruple("GOTO", "nil", "nil", std::to_string(startAddress));
+        // update the GOTOF result with the current quadruple index
+        int exitAddress = jumpStack.top(); jumpStack.pop();
+        quadruples[exitAddress].result = std::to_string(quadruples.size());
+        return nullptr;
+    }
 };
 
 // function to print quadruples
