@@ -58,17 +58,17 @@ void panicoParserInitialize() {
       "condicion", "ciclo", "llamada", "imprime", "impr"
     },
     std::vector<std::string>{
-      "", "'programa'", "'inicio'", "'fin'", "'vars'", "'int'", "'float'", 
+      "", "'program'", "'start'", "'end'", "'vars'", "'int'", "'float'", 
       "'print'", "'while'", "'void'", "'if'", "'else'", "';'", "','", "':'", 
       "'{'", "'}'", "'('", "')'", "'='", "'>'", "'<'", "'!='", "'=='", "'+'", 
       "'-'", "'*'", "'/'"
     },
     std::vector<std::string>{
-      "", "PROGRAMA", "INICIO", "FIN", "VARS", "INT", "FLOAT", "PRINT", 
-      "WHILE", "VOID", "IF", "ELSE", "PUNTOYCOMA", "COMA", "DOSPUNTOS", 
-      "LLAVEIZQ", "LLAVEDER", "PARENIZQ", "PARENDER", "IGUAL", "MAYORQUE", 
-      "MENORQUE", "DIFERENTE", "IGUALIGUAL", "MAS", "MENOS", "MULT", "DIV", 
-      "ID", "CTE_ENT", "CTE_FLOT", "LETRERO_VALOR", "WS"
+      "", "PROGRAM", "START", "END", "VARS", "INT", "FLOAT", "PRINT", "WHILE", 
+      "VOID", "IF", "ELSE", "PUNTOYCOMA", "COMA", "DOSPUNTOS", "LLAVEIZQ", 
+      "LLAVEDER", "PARENIZQ", "PARENDER", "IGUAL", "MAYORQUE", "MENORQUE", 
+      "DIFERENTE", "IGUALIGUAL", "MAS", "MENOS", "MULT", "DIV", "ID", "CTE_ENT", 
+      "CTE_FLOT", "LETRERO_VALOR", "WS"
     }
   );
   static const int32_t serializedATNSegment[] = {
@@ -194,8 +194,8 @@ PanicoParser::ProgramaContext::ProgramaContext(ParserRuleContext *parent, size_t
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* PanicoParser::ProgramaContext::PROGRAMA() {
-  return getToken(PanicoParser::PROGRAMA, 0);
+tree::TerminalNode* PanicoParser::ProgramaContext::PROGRAM() {
+  return getToken(PanicoParser::PROGRAM, 0);
 }
 
 tree::TerminalNode* PanicoParser::ProgramaContext::ID() {
@@ -206,8 +206,8 @@ tree::TerminalNode* PanicoParser::ProgramaContext::PUNTOYCOMA() {
   return getToken(PanicoParser::PUNTOYCOMA, 0);
 }
 
-tree::TerminalNode* PanicoParser::ProgramaContext::INICIO() {
-  return getToken(PanicoParser::INICIO, 0);
+tree::TerminalNode* PanicoParser::ProgramaContext::START() {
+  return getToken(PanicoParser::START, 0);
 }
 
 tree::TerminalNode* PanicoParser::ProgramaContext::LLAVEIZQ() {
@@ -222,8 +222,8 @@ tree::TerminalNode* PanicoParser::ProgramaContext::LLAVEDER() {
   return getToken(PanicoParser::LLAVEDER, 0);
 }
 
-tree::TerminalNode* PanicoParser::ProgramaContext::FIN() {
-  return getToken(PanicoParser::FIN, 0);
+tree::TerminalNode* PanicoParser::ProgramaContext::END() {
+  return getToken(PanicoParser::END, 0);
 }
 
 PanicoParser::VarsContext* PanicoParser::ProgramaContext::vars() {
@@ -278,7 +278,7 @@ PanicoParser::ProgramaContext* PanicoParser::programa() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(38);
-    match(PanicoParser::PROGRAMA);
+    match(PanicoParser::PROGRAM);
     setState(39);
     match(PanicoParser::ID);
     setState(40);
@@ -302,7 +302,7 @@ PanicoParser::ProgramaContext* PanicoParser::programa() {
       _la = _input->LA(1);
     }
     setState(50);
-    match(PanicoParser::INICIO);
+    match(PanicoParser::START);
     setState(51);
     match(PanicoParser::LLAVEIZQ);
     setState(52);
@@ -310,7 +310,7 @@ PanicoParser::ProgramaContext* PanicoParser::programa() {
     setState(53);
     match(PanicoParser::LLAVEDER);
     setState(54);
-    match(PanicoParser::FIN);
+    match(PanicoParser::END);
    
   }
   catch (RecognitionException &e) {
