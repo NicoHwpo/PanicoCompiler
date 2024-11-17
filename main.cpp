@@ -28,9 +28,14 @@ public:
     std::stack<int> jumpStack;
     std::vector<Quadruple> quadruples;
     int tempCounter = 0;
+    int paramCounter = 0;
 
     std::string createTempVar() {
         return "t" + std::to_string(tempCounter++);
+    }
+
+    std::string createParamVar() {
+        return "param" + std::to_string(paramCounter++);
     }
 
     void generateQuadruple(const std::string &op, const std::string &arg1, const std::string &arg2, const std::string &result) {
@@ -53,8 +58,60 @@ public:
         // std::cout << "Parameters:\n";
         if (!functionDirectory.addFunction(functionName, returnType)) {
             std::cerr << "Function " << functionName << " already declared." << std::endl;
+            return nullptr;
         }
-        return visitChildren(ctx);
+        // process the function parameters and variables
+        if (ctx->params() != nullptr) {
+            visit(ctx->params());
+        }
+        if (ctx->vars() != nullptr) {
+            visit(ctx->vars());
+        }
+        // set the start of the function
+        functionDirectory.setStartAddressToCurFunc(quadruples.size());
+        // process the function body
+        visit(ctx->cuerpo());
+        // generate ENDFUNC quadruple
+        generateQuadruple("ENDFUNC", "nil", "nil", "nil");
+        return nullptr;
+    }
+
+    antlrcpp::Any visitLlamada(PanicoParser::LlamadaContext *ctx) override {
+        // get func name
+        std::string funcName = ctx->ID()->getText();
+        // get func info
+        FunctionInfo *funcInfo = functionDirectory.getFunctionInfo(funcName);
+        if (funcInfo == nullptr) {
+            antlr4::Token *startToken = ctx->getStart();
+            int line = startToken->getLine();
+            int column = startToken->getCharPositionInLine();
+            std::cerr << "Function " << funcName << " not found. Line: " << line << ", Column: " << column << std::endl;
+            return nullptr;
+        }
+        // generate ERA quadruple to prepare for activation record for the func
+        generateQuadruple("ERA", funcName, "nil", "nil");
+        // check if the number of arguments matches the number of parameters
+        if (ctx->expresion().size() != funcInfo->numParams) {
+            antlr4::Token *startToken = ctx->getStart();
+            int line = startToken->getLine();
+            int column = startToken->getCharPositionInLine();
+            std::cerr << "Function " << funcName << " expects " << funcInfo->numParams << " arguments, but " << ctx->expresion().size() << " were provided. Line: " << line << ", Column: " << column << std::endl;
+            return nullptr;
+        }
+        // process the function arguments and generate PARAM quadruples
+        for (size_t i = 0; i < ctx->expresion().size(); i++) {
+            // visit the expression
+            visit(ctx->expresion(i));
+            // pop the result of the expression
+            std::string param = operandStack.top(); operandStack.pop();
+            // generate PARAM quadruple
+            generateQuadruple("PARAM", param, "nil", createParamVar());
+        }
+        paramCounter = 0;
+        // generate GOSUB quadruple to call the function
+        int startAddress = funcInfo->startAddress;
+        generateQuadruple("GOSUB", funcName, "nil", std::to_string(startAddress));
+        return nullptr;
     }
 
     antlrcpp::Any visitParams(PanicoParser::ParamsContext *ctx) override {
