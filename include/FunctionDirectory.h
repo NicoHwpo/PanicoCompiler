@@ -14,6 +14,8 @@ struct FunctionInfo {
     VariableTable parametersTable;
     VariableTable variableTable;
     int startAddress = -1;
+    int numVars = 0;
+    int numParams = 0;
 };
 
 class FunctionDirectory {
@@ -26,6 +28,7 @@ public:
     void setMainFunction(FunctionInfo *function);
     FunctionInfo *getMainFunction();
 
+    void setStartAddressToCurFunc(int startAddress);
     bool addParameterToCurFunc(const std::string &name, Type type);
     bool addVariableToCurFunc(const std::string &name, Type type);
     VariableInfo *getVarInfoFuncScope(const std::string &name);

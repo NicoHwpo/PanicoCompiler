@@ -30,6 +30,15 @@ FunctionInfo *FunctionDirectory::getMainFunction() {
     return mainFunction;
 }
 
+void FunctionDirectory::setStartAddressToCurFunc(int startAddress) {
+    if (currentFunction == nullptr) {
+        std::cerr << "No function to set start address to." << std::endl;
+        return;
+    }
+    currentFunction->startAddress = startAddress;
+    return;
+}
+
 bool FunctionDirectory::addParameterToCurFunc(const std::string &name, Type type) {
     if (currentFunction == nullptr) {
         std::cerr << "No function to add parameter to." << std::endl;
@@ -41,12 +50,14 @@ bool FunctionDirectory::addParameterToCurFunc(const std::string &name, Type type
         return false;
     }
     // Check if parameter name is already declared as a variable in the global scope
-    if (mainFunction->variableTable.getVariableInfo(name) != nullptr) {
-        std::cerr << "Parameter " << name << " already declared as a variable in the global scope." << std::endl;
-        return false;
-    }
+    // if (mainFunction->variableTable.getVariableInfo(name) != nullptr) {
+    //     std::cerr << "Parameter " << name << " already declared as a variable in the global scope." << std::endl;
+    //     return false;
+    // }
     // add the parameter to the current function's parameter table
-    return currentFunction->parametersTable.addVariable(name, type);
+    currentFunction->parametersTable.addVariable(name, type);
+    currentFunction->numParams++;
+    return true;
 }
 
 bool FunctionDirectory::addVariableToCurFunc(const std::string &name, Type type) {
@@ -65,13 +76,15 @@ bool FunctionDirectory::addVariableToCurFunc(const std::string &name, Type type)
         return false;
     }
     // validar que no haya en el global
-    if (mainFunction->variableTable.getVariableInfo(name) != nullptr) {
-        std::cerr << "Variable " << name << " already declared in the global scope." << std::endl;
-        return false;
-    }
+    // if (mainFunction->variableTable.getVariableInfo(name) != nullptr) {
+    //     std::cerr << "Variable " << name << " already declared in the global scope." << std::endl;
+    //     return false;
+    // }
     // agarro la tabla de variables de la funcion actual y le agrego la variable
     // si se agrega correctamente, regreso true
-    return currentFunction->variableTable.addVariable(name, type);
+    currentFunction->variableTable.addVariable(name, type);
+    currentFunction->numVars++;
+    return true;
 }
 
 VariableInfo* FunctionDirectory::getVarInfoFuncScope(const std::string &name) {
