@@ -47,15 +47,27 @@ public:
         // std::cout << "Program name: " << programName << std::endl;
         functionDirectory.addFunction(programName, VOID);
         functionDirectory.setMainFunction(functionDirectory.getCurrentFunction());
-        return visitChildren(ctx);
+        // generate GOTO quadruple to jump to the main function
+        generateQuadruple("GOTO", "nil", "nil", "nil");
+        // visit the vars and funcs
+        if (ctx->vars() != nullptr) {
+            visit(ctx->vars());
+        }
+        for (size_t i = 0; i < ctx->funcs().size(); i++) {
+            visit(ctx->funcs(i));
+        }
+        // update the GOTO quadruple to jump to the start of the main function
+        quadruples[0].result = std::to_string(quadruples.size());
+        // visit the main function
+        visit(ctx->cuerpo());
+        // generate HALT quadruple to end the program
+        generateQuadruple("HALT", "nil", "nil", "nil");
+        return nullptr;
     }
 
     antlrcpp::Any visitFuncs(PanicoParser::FuncsContext *ctx) override {
         std::string functionName = ctx->ID()->getText();
         Type returnType = semanticCube.getTypeFromString(ctx->VOID()->getText());
-        // std::cout << "Function name: " << functionName << std::endl;
-        // std::cout << "Return type: " << returnType << std::endl;
-        // std::cout << "Parameters:\n";
         if (!functionDirectory.addFunction(functionName, returnType)) {
             std::cerr << "Function " << functionName << " already declared." << std::endl;
             return nullptr;
@@ -119,7 +131,6 @@ public:
         for (size_t i = 0; i < numParams; i++) {
             std::string paramName = ctx->ID(i)->getText();
             Type paramType = semanticCube.getTypeFromString(ctx->tipo(i)->getText());
-            // std::cout << "Parameter " << paramName << " of type " << paramType << std::endl;
             functionDirectory.addParameterToCurFunc(paramName, paramType);
         }
         return visitChildren(ctx);
