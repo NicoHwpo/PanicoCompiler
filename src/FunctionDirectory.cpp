@@ -26,6 +26,10 @@ void FunctionDirectory::setMainFunction(FunctionInfo *function) {
     mainFunction = function;
 }
 
+void FunctionDirectory::setCurrentFunction(FunctionInfo *function) {
+    mainFunction = function;
+}
+
 FunctionInfo *FunctionDirectory::getMainFunction() {
     return mainFunction;
 }
@@ -39,15 +43,17 @@ void FunctionDirectory::setStartAddressToCurFunc(int startAddress) {
     return;
 }
 
-bool FunctionDirectory::addParameterToCurFunc(const std::string &name, Type type) {
+bool FunctionDirectory::addParameterToCurFunc(const std::string &name, Type type, int memoryAddress) {
     if (currentFunction == nullptr) {
         std::cerr << "No function to add parameter to." << std::endl;
         return false;
     }
     // Check if parameter name is already declared as a parameter in the current function
-    if (currentFunction->parametersTable.getVariableInfo(name) != nullptr) {
-        std::cerr << "Parameter " << name << " already declared as a parameter in this function." << std::endl;
-        return false;
+    for (const auto &param : currentFunction->parametersTable) {
+        if (param.name == name) {
+            std::cerr << "Parameter " << name << " already declared as a parameter in this function." << std::endl;
+            return false;
+        }
     }
     // Check if parameter name is already declared as a variable in the global scope
     // if (mainFunction->variableTable.getVariableInfo(name) != nullptr) {
@@ -55,20 +61,22 @@ bool FunctionDirectory::addParameterToCurFunc(const std::string &name, Type type
     //     return false;
     // }
     // add the parameter to the current function's parameter table
-    currentFunction->parametersTable.addVariable(name, type);
+    currentFunction->parametersTable.push_back({name, type, memoryAddress});
     currentFunction->numParams++;
     return true;
 }
 
-bool FunctionDirectory::addVariableToCurFunc(const std::string &name, Type type) {
+bool FunctionDirectory::addVariableToCurFunc(const std::string &name, Type type, int memoryAddress) {
     if (currentFunction == nullptr) {
         std::cerr << "No function to add variable to." << std::endl;
         return false;
     }
     // validar que no haya en los parametros
-    if (currentFunction->parametersTable.getVariableInfo(name) != nullptr) {
-        std::cerr << "Variable " << name << " already declared as a parameter in this function." << std::endl;
-        return false;
+    for (const auto &param : currentFunction->parametersTable) {
+        if (param.name == name) {
+            std::cerr << "Variable " << name << " already declared as a parameter in this function." << std::endl;
+            return false;
+        }
     }
     // validar que no haya en la funcion actual
     if (currentFunction->variableTable.getVariableInfo(name) != nullptr) {
@@ -82,7 +90,7 @@ bool FunctionDirectory::addVariableToCurFunc(const std::string &name, Type type)
     // }
     // agarro la tabla de variables de la funcion actual y le agrego la variable
     // si se agrega correctamente, regreso true
-    currentFunction->variableTable.addVariable(name, type);
+    currentFunction->variableTable.addVariable(name, type, memoryAddress);
     currentFunction->numVars++;
     return true;
 }
@@ -103,8 +111,10 @@ VariableInfo* FunctionDirectory::getVarInFuncOrGlobalScope(const std::string &na
             return currentFunction->variableTable.getVariableInfo(name);
         }
         // check if the variable is in the current function's parameters table
-        if (currentFunction->parametersTable.getVariableInfo(name) != nullptr) {
-            return currentFunction->parametersTable.getVariableInfo(name);
+        for (auto &param : currentFunction->parametersTable) {
+            if (param.name == name) {
+                return &param;
+            }
         }
     }
     // check if the variable is in the global scope
@@ -114,4 +124,8 @@ VariableInfo* FunctionDirectory::getVarInFuncOrGlobalScope(const std::string &na
         }
     }
     return nullptr;
+}
+
+bool FunctionDirectory::isGlobalScope() {
+    return currentFunction == mainFunction;
 }
