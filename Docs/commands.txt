@@ -1,4 +1,5 @@
 Para generar el lexer y parser (donde Panico.g4 es el archivo con la gramatica):
+- entrar al directorio ./Panico y ejecutar:
 antlr4 -Dlanguage=Cpp -visitor -o generated/ Panico.g4
 
 Compilar main.cpp (accedemos al dir donde se encuentra main.cpp):
@@ -14,12 +15,23 @@ g++ -std=c++17 \
     -L /opt/homebrew/opt/antlr4-cpp-runtime/lib \
     -l antlr4-runtime \
     -I include \
-    -o ./output/PanicoCompiler main.cpp generated/*.cpp src/*.cpp 
+    -o ../Output/PanicoCompiler main.cpp generated/*.cpp src/*.cpp 
+
+ó desde el root dir:
+g++ -std=c++17 \
+    -I /opt/homebrew/opt/antlr4-cpp-runtime/include/antlr4-runtime \
+    -L /opt/homebrew/opt/antlr4-cpp-runtime/lib \
+    -l antlr4-runtime \
+    -I ./Panico/include \
+    -o ./Output/PanicoCompiler ./Panico/main.cpp ./Panico/generated/*.cpp ./Panico/src/*.cpp 
 
 Correr main.cpp (PanicoCompiler en el Panico dir):
 ./output/PanicoCompiler path/to/your/input.panico
 I.E:
 ./output/PanicoCompiler ../Samples/simple.panico
+
+ó desde el root dir:
+./Output/PanicoCompiler ./Samples/simple.paico
 
 Compilar y correr main.cpp (en Panico dir):
 g++ -std=c++17 \
