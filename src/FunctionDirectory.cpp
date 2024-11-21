@@ -27,7 +27,7 @@ void FunctionDirectory::setMainFunction(FunctionInfo *function) {
 }
 
 void FunctionDirectory::setCurrentFunction(FunctionInfo *function) {
-    mainFunction = function;
+    currentFunction = function;
 }
 
 FunctionInfo *FunctionDirectory::getMainFunction() {
