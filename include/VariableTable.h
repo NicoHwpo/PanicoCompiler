@@ -15,9 +15,10 @@ struct VariableInfo {
 
 class VariableTable {
 public:
-    bool addVariable(const std::string &name, Type type);
+    bool addVariable(const std::string &name, Type type, int memoryAddress);
     VariableInfo *getVariableInfo(const std::string &name);
     std::unordered_map<std::string, VariableInfo> *getVariables();
+    bool setMemoryAddress(const std::string &name, int memoryAddress);
 
 private:
     std::unordered_map<std::string, VariableInfo> variables;
