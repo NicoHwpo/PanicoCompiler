@@ -22,7 +22,8 @@ void printQuadruplesAsAddresses(const std::vector<Quadruple> &quadruples) {
 }
 
 void genOutputObjFile(CustomVisitor &visitor) {
-    std::ofstream out("output.obj");
+    std::string programName = visitor.functionDirectory.getMainFunction()->name;
+    std::ofstream out("./output/" + programName + ".obj");
     if (!out.is_open()) {
         std::cerr << "Could not open output file." << std::endl;
         return;
