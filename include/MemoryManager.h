@@ -48,6 +48,9 @@ public:
     // Allocate memory for temporary floats
     int allocateTempFloat();
 
+    // Find constant integer, float or string address
+    int findConstant(Type type, std::string value);
+
     // Get or create a constant integer or float address
     int getOrCreateConstant(Type type, std::string value);
 
@@ -59,6 +62,11 @@ public:
 
     // Reset temporaries for a new function or expression
     void resetTemporaries();
+
+    // Get the constants maps
+    std::unordered_map<int, int> getIntConstants();
+    std::unordered_map<float, int> getFloatConstants();
+    std::unordered_map<std::string, int> getStringConstants();
 };
 
 

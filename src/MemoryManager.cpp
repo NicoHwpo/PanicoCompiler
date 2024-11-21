@@ -56,6 +56,26 @@ int MemoryManager::allocateTempFloat() {
     return tempFloatPointer++;
 }
 
+// Find constant integer, float or string address
+int MemoryManager::findConstant(Type type, std::string value) {
+    if (type == INT) {
+        int intValue = std::stoi(value);
+        if (intConstants.find(intValue) != intConstants.end()) {
+            return intConstants[intValue];
+        }
+    } else if (type == FLOAT) {
+        float floatValue = std::stof(value);
+        if (floatConstants.find(floatValue) != floatConstants.end()) {
+            return floatConstants[floatValue];
+        }
+    } else if (type == STRING) {
+        if (stringConstants.find(value) != stringConstants.end()) {
+            return stringConstants[value];
+        }
+    }
+    return -1;
+}
+
 // Get or create a constant integer, float or string address
 int MemoryManager::getOrCreateConstant(Type type, std::string value) {
     if (type == INT) {
@@ -98,4 +118,17 @@ void MemoryManager::resetLocals() {
 void MemoryManager::resetTemporaries() {
     tempIntPointer = tempIntBase;
     tempFloatPointer = tempFloatBase;
+}
+
+// Get the constants map
+std::unordered_map<int, int> MemoryManager::getIntConstants() {
+    return intConstants;
+}
+
+std::unordered_map<float, int> MemoryManager::getFloatConstants() {
+    return floatConstants;
+}
+
+std::unordered_map<std::string, int> MemoryManager::getStringConstants() {
+    return stringConstants;
 }
