@@ -56,9 +56,12 @@ void CustomVisitor::generateQuadruple(const std::string &op, const std::string &
     // quadruplesWithAddresses.push_back({op, std::to_string(getAddress(arg1)), std::to_string(getAddress(arg2)), std::to_string(getAddress(result))});
 }
 
-int CustomVisitor::getAddress(const std::string &var) {
+int CustomVisitor::getAddress(const std::string &var, Type type) {
     if (functionDirectory.getVarInFuncOrGlobalScope(var) != nullptr) {
         return functionDirectory.getVarInFuncOrGlobalScope(var)->memoryAddress;
+    }
+    if (memoryManager.findConstant(type, var) != -1) {
+        return memoryManager.findConstant(type, var);
     }
     return -1;
 }
@@ -73,7 +76,9 @@ antlrcpp::Any CustomVisitor::visitPrograma(PanicoParser::ProgramaContext *ctx) {
     functionDirectory.setMainFunction(functionDirectory.getCurrentFunction());
     // generate GOTO quadruple to jump to the main function
     jumpStack.push(quadruples.size());
-    generateQuadruple("GOTO", "nil", "nil", "pending");
+    Quadruple gotoQuad = {{"GOTO", -1}, {"nil", -1}, {"nil", -1}, {"pending", -1}};
+    quadruples.push_back(gotoQuad);
+    // generateQuadruple("GOTO", "nil", "nil", "pending");
     // visit the vars
     if (ctx->vars() != nullptr) {
         visit(ctx->vars());
@@ -85,13 +90,18 @@ antlrcpp::Any CustomVisitor::visitPrograma(PanicoParser::ProgramaContext *ctx) {
         // after visiting the function, reset the local memory
         memoryManager.resetLocals();
     }
+    functionDirectory.setCurrentFunction(functionDirectory.getMainFunction());
+    functionDirectory.setStartAddressToCurFunc(quadruples.size());
     // update the GOTO quadruple to jump to the start of the main function
     int startAddress = jumpStack.top(); jumpStack.pop();
     quadruples[startAddress].result.name = std::to_string(quadruples.size());
+    quadruples[startAddress].result.address = quadruples.size();
     // visit the main function
     visit(ctx->cuerpo());
     // generate HALT quadruple to end the program
-    generateQuadruple("HALT", "nil", "nil", "nil");
+    Quadruple haltQuad = {{"HALT", -1}, {"nil", -1}, {"nil", -1}, {"nil", -1}};
+    quadruples.push_back(haltQuad);
+    // generateQuadruple("HALT", "nil", "nil", "nil");
     return nullptr;
 }
 
@@ -149,8 +159,9 @@ antlrcpp::Any CustomVisitor::visitFuncs(PanicoParser::FuncsContext *ctx) {
     // process the function body
     visit(ctx->cuerpo());
     // generate ENDFUNC quadruple
-    generateQuadruple("ENDFUNC", "nil", "nil", "nil");
-    functionDirectory.setCurrentFunction(functionDirectory.getMainFunction());
+    Quadruple endFuncQuad = {{"ENDFUNC", -1}, {"nil", -1}, {"nil", -1}, {"nil", -1}};
+    quadruples.push_back(endFuncQuad);
+    // generateQuadruple("ENDFUNC", "nil", "nil", "nil");
     return nullptr;
 }
 
@@ -208,7 +219,9 @@ antlrcpp::Any CustomVisitor::visitAsigna(PanicoParser::AsignaContext *ctx) {
         return nullptr;
     }
     // generate assignment quadruple
-    generateQuadruple("=", result, "nil", varName);
+    Quadruple quad = {{"=", -1}, {result, getAddress(result, resultType)}, {"nil", -1}, {varName, getAddress(varName, varType)}};
+    quadruples.push_back(quad);
+    // generateQuadruple("=", result, "nil", varName);
     return nullptr;
 }
 
@@ -245,7 +258,9 @@ antlrcpp::Any CustomVisitor::visitExpresion(PanicoParser::ExpresionContext *ctx)
         // add the temporary variable to the function's variable table
         functionDirectory.addVariableToCurFunc(tempResult, resultType, address);
         // generate quadruple for the relational operation
-        generateQuadruple(relationalOp, leftOperand, rightOperand, tempResult);
+        Quadruple quad = {{relationalOp, -1}, {leftOperand, getAddress(leftOperand, leftType)}, {rightOperand, getAddress(rightOperand, rightType)}, {tempResult, getAddress(tempResult, resultType)}};
+        quadruples.push_back(quad);
+        // generateQuadruple(relationalOp, leftOperand, rightOperand, tempResult);
         // push the temporary variable operand and type to the stacks
         operandStack.push(tempResult);
         typeStack.push(resultType);
@@ -290,7 +305,9 @@ antlrcpp::Any CustomVisitor::visitExp(PanicoParser::ExpContext *ctx) {
             // add the temporary variable to the function's variable table
             functionDirectory.addVariableToCurFunc(tempResult, resultType, address);
             // generate quadruple for the arithmetic operation
-            generateQuadruple(op, leftOperand, rightOperand, tempResult);
+            Quadruple quad = {{op, -1}, {leftOperand, getAddress(leftOperand, leftType)}, {rightOperand, getAddress(rightOperand, rightType)}, {tempResult, getAddress(tempResult, resultType)}};
+            quadruples.push_back(quad);
+            // generateQuadruple(op, leftOperand, rightOperand, tempResult);
             // push the temporary variable operand and type to the stacks
             operandStack.push(tempResult);
             typeStack.push(resultType);
@@ -336,7 +353,9 @@ antlrcpp::Any CustomVisitor::visitTermino(PanicoParser::TerminoContext *ctx) {
             // add the temporary variable to the function's variable table
             functionDirectory.addVariableToCurFunc(tempResult, resultType, address);
             // generate quadruple for the arithmetic operation
-            generateQuadruple(op, leftOperand, rightOperand, tempResult);
+            Quadruple quad = {{op, -1}, {leftOperand, getAddress(leftOperand, leftType)}, {rightOperand, getAddress(rightOperand, rightType)}, {tempResult, getAddress(tempResult, resultType)}};
+            quadruples.push_back(quad);
+            // generateQuadruple(op, leftOperand, rightOperand, tempResult);
             // push the temporary variable operand and type to the stacks
             operandStack.push(tempResult);
             typeStack.push(resultType);
@@ -388,7 +407,9 @@ antlrcpp::Any CustomVisitor::visitFactor(PanicoParser::FactorContext *ctx) {
         // add the temporary variable to the function's variable table
         functionDirectory.addVariableToCurFunc(tempResult, operandType, address);
         // generate quadruple for the unary minus
-        generateQuadruple("MINUS", operandName, "nil", tempResult);
+        Quadruple quad = {{"MINUS", -1}, {operandName, getAddress(operandName, operandType)}, {"nil", -1}, {tempResult, getAddress(tempResult, operandType)}};
+        quadruples.push_back(quad);
+        // generateQuadruple("MINUS", operandName, "nil", tempResult);
         // push the temporary variable operand and type to the stacks
         operandStack.push(tempResult);
         typeStack.push(operandType);
@@ -420,13 +441,17 @@ antlrcpp::Any CustomVisitor::visitImpr(PanicoParser::ImprContext *ctx) {
         handleMemoryAllocationError(address, ctx->getStart());
         // push the operand to the operand stack
         operandStack.push(printOperand);
+        // push the type to the type stack
+        typeStack.push(STRING);
     }
     // pop the operand
     printOperand = operandStack.top(); operandStack.pop();
     // pop the type
     Type printType = typeStack.top(); typeStack.pop();
     // generate quadruple to print the operand
-    generateQuadruple("PRINT", printOperand, "nil", "nil");
+    Quadruple quad = {{"PRINT", -1}, {printOperand, getAddress(printOperand, printType)}, {"nil", -1}, {"nil", -1}};
+    quadruples.push_back(quad);
+    // generateQuadruple("PRINT", printOperand, "nil", "nil");
     return nullptr;
 }
 
@@ -447,16 +472,21 @@ antlrcpp::Any CustomVisitor::visitCiclo(PanicoParser::CicloContext *ctx) {
     }
     // generate the GOTO false quadruple
     int gotofQuadIndex = quadruples.size();
-    generateQuadruple("GOTOF", result, "nil", "pending");
+    Quadruple quad = {{"GOTOF", -1}, {result, getAddress(result, resultType)}, {"nil", -1}, {"pending", -1}};
+    quadruples.push_back(quad);
+    // generateQuadruple("GOTOF", result, "nil", "pending");
     // push the jump target to the jump stack
     jumpStack.push(gotofQuadIndex);
     // visit the loop body
     visit(ctx->cuerpo());
     // generate the GOTO quad to return to the loop condition
-    generateQuadruple("GOTO", "nil", "nil", std::to_string(startAddress));
+    quad = {{"GOTO", -1}, {"nil", -1}, {"nil", -1}, {std::to_string(startAddress), startAddress}};
+    quadruples.push_back(quad);
+    // generateQuadruple("GOTO", "nil", "nil", std::to_string(startAddress));
     // update the GOTOF result with the current quadruple index
     int exitAddress = jumpStack.top(); jumpStack.pop();
     quadruples[exitAddress].result.name = std::to_string(quadruples.size());
+    quadruples[exitAddress].result.address = quadruples.size();
     return nullptr;
 }
 
@@ -475,7 +505,9 @@ antlrcpp::Any CustomVisitor::visitCondicion(PanicoParser::CondicionContext *ctx)
     }
     // generate quadruple to jump if false and push the jump label
     int gotofQuadIndex = quadruples.size();
-    generateQuadruple("GOTOF", result, "nil", "pending");
+    Quadruple quad = {{"GOTOF", -1}, {result, getAddress(result, resultType)}, {"nil", -1}, {"pending", -1}};
+    quadruples.push_back(quad);
+    // generateQuadruple("GOTOF", result, "nil", "pending");
     // push the jump target to the jump stack
     jumpStack.push(gotofQuadIndex);
     // visit the body of the if statement
@@ -485,11 +517,14 @@ antlrcpp::Any CustomVisitor::visitCondicion(PanicoParser::CondicionContext *ctx)
         // handle else part
         int gotoQuadIndex = quadruples.size();
         // generate GOTO quadruple to jump to the end of the else statement
-        generateQuadruple("GOTO", "nil", "nil", "pending");
+        quad = {{"GOTO", -1}, {"nil", -1}, {"nil", -1}, {"pending", -1}};
+        quadruples.push_back(quad);
+        // generateQuadruple("GOTO", "nil", "nil", "pending");
         // update the GOTOF target to jump to the else statement
         int gotofAddress = jumpStack.top(); jumpStack.pop();
         // fill the GOTOF target
         quadruples[gotofAddress].result.name = std::to_string(quadruples.size());
+        quadruples[gotofAddress].result.address = quadruples.size();
         // push the new GOTO location and visit the else statement
         jumpStack.push(gotoQuadIndex);
         visit(ctx->cuerpo(1));
@@ -497,6 +532,7 @@ antlrcpp::Any CustomVisitor::visitCondicion(PanicoParser::CondicionContext *ctx)
     // fill the final jump target
     int exitAddress = jumpStack.top(); jumpStack.pop();
     quadruples[exitAddress].result.name = std::to_string(quadruples.size());
+    quadruples[exitAddress].result.address = quadruples.size();
     return nullptr;
 }
 
@@ -514,7 +550,9 @@ antlrcpp::Any CustomVisitor::visitLlamada(PanicoParser::LlamadaContext *ctx) {
         return nullptr;
     }
     // generate ERA quadruple to prepare for activation record for the func
-    generateQuadruple("ERA", funcName, "nil", "nil");
+    Quadruple quad = {{"ERA", -1}, {funcName, -1}, {"nil", -1}, {"nil", -1}};
+    quadruples.push_back(quad);
+    // generateQuadruple("ERA", funcName, "nil", "nil");
     // check if the number of arguments matches the number of parameters
     if (ctx->expresion().size() != funcInfo->numParams) {
         antlr4::Token *startToken = ctx->getStart();
@@ -544,11 +582,15 @@ antlrcpp::Any CustomVisitor::visitLlamada(PanicoParser::LlamadaContext *ctx) {
             return nullptr;
         }
         // generate PARAM quadruple
-        generateQuadruple("PARAM", argument, "nil", std::to_string(address));
+        quad = {{"PARAM", -1}, {argument, getAddress(argument, argumentType)}, {"nil", -1}, {std::to_string(address), address}};
+        quadruples.push_back(quad);
+        // generateQuadruple("PARAM", argument, "nil", std::to_string(address));
     }
     // generate GOSUB quadruple to call the function
     int startAddress = funcInfo->startAddress;
-    generateQuadruple("GOSUB", funcName, "nil", std::to_string(startAddress));
+    quad = {{"GOSUB", -1}, {funcName, -1}, {"nil", -1}, {std::to_string(startAddress), startAddress}};
+    quadruples.push_back(quad);
+    // generateQuadruple("GOSUB", funcName, "nil", std::to_string(startAddress));
     return nullptr;
 }
 

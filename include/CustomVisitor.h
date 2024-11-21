@@ -19,7 +19,6 @@ struct QuadrupleValue {
     int address;
 };
 
-
 struct Quadruple {
     QuadrupleValue op;
     QuadrupleValue arg1;
@@ -47,7 +46,7 @@ public:
 
     std::string createParamVar();
     void generateQuadruple(const std::string &op, const std::string &arg1, const std::string &arg2, const std::string &result);
-    int getAddress(const std::string &var);
+    int getAddress(const std::string &var, Type type = ERROR);
     int allocateMemory(Type type, bool isGlobal);
     void handleMemoryAllocationError(int address, antlr4::Token *startToken);
     void handleVarInfoError(std::string var, antlr4::Token *startToken);
