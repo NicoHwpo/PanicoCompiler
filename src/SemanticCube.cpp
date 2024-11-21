@@ -65,6 +65,8 @@ Type SemanticCube::getTypeFromString(const std::string &type) {
         return INT;
     } else if (type == "float") {
         return FLOAT;
+    } else if (type == "void") {
+        return VOID;
     } else {
         return ERROR;
     }
@@ -75,6 +77,8 @@ std::string SemanticCube::getStringFromType(const Type &type) {
         return "int";
     } else if (type == FLOAT) {
         return "float";
+    } else if (type == VOID) {
+        return "void";
     } else {
         return "error";
     }
