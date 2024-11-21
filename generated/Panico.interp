@@ -1,8 +1,8 @@
 token literal names:
 null
-'programa'
-'inicio'
-'fin'
+'program'
+'start'
+'end'
 'vars'
 'int'
 'float'
@@ -35,9 +35,9 @@ null
 
 token symbolic names:
 null
-PROGRAMA
-INICIO
-FIN
+PROGRAM
+START
+END
 VARS
 INT
 FLOAT

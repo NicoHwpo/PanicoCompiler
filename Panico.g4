@@ -2,9 +2,9 @@ grammar Panico;
 
 // LEXER
 // Palabras clave
-PROGRAMA: 'programa';
-INICIO: 'inicio';
-FIN: 'fin';
+PROGRAM: 'program';
+START: 'start';
+END: 'end';
 VARS: 'vars';
 INT: 'int';
 FLOAT: 'float';
@@ -43,7 +43,7 @@ WS: [ \t\r\n]+ -> skip;
 
 
 // PARSER
-programa: PROGRAMA ID PUNTOYCOMA vars? funcs* INICIO LLAVEIZQ cuerpo LLAVEDER FIN; 
+programa: PROGRAM ID PUNTOYCOMA vars? funcs* START LLAVEIZQ cuerpo LLAVEDER END; 
 
 vars: VARS LLAVEIZQ decl_var+ LLAVEDER;
 decl_var: ID (COMA ID)* DOSPUNTOS tipo PUNTOYCOMA;

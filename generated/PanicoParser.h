@@ -12,7 +12,7 @@
 class  PanicoParser : public antlr4::Parser {
 public:
   enum {
-    PROGRAMA = 1, INICIO = 2, FIN = 3, VARS = 4, INT = 5, FLOAT = 6, PRINT = 7, 
+    PROGRAM = 1, START = 2, END = 3, VARS = 4, INT = 5, FLOAT = 6, PRINT = 7, 
     WHILE = 8, VOID = 9, IF = 10, ELSE = 11, PUNTOYCOMA = 12, COMA = 13, 
     DOSPUNTOS = 14, LLAVEIZQ = 15, LLAVEDER = 16, PARENIZQ = 17, PARENDER = 18, 
     IGUAL = 19, MAYORQUE = 20, MENORQUE = 21, DIFERENTE = 22, IGUALIGUAL = 23, 
@@ -68,14 +68,14 @@ public:
   public:
     ProgramaContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *PROGRAMA();
+    antlr4::tree::TerminalNode *PROGRAM();
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *PUNTOYCOMA();
-    antlr4::tree::TerminalNode *INICIO();
+    antlr4::tree::TerminalNode *START();
     antlr4::tree::TerminalNode *LLAVEIZQ();
     CuerpoContext *cuerpo();
     antlr4::tree::TerminalNode *LLAVEDER();
-    antlr4::tree::TerminalNode *FIN();
+    antlr4::tree::TerminalNode *END();
     VarsContext *vars();
     std::vector<FuncsContext *> funcs();
     FuncsContext* funcs(size_t i);

@@ -48,6 +48,11 @@ void SemanticCube::initializeCube() {
     cube["0!=1"] = INT;
     cube["1!=0"] = INT;
     cube["1!=1"] = INT;
+    // assignments
+    cube["0=0"] = INT;
+    cube["0=1"] = ERROR;
+    cube["1=0"] = ERROR;
+    cube["1=1"] = FLOAT;
 }
 
 Type SemanticCube::getResultType(Type &type1, Type &type2, const std::string &op) {
@@ -60,7 +65,29 @@ Type SemanticCube::getTypeFromString(const std::string &type) {
         return INT;
     } else if (type == "float") {
         return FLOAT;
+    } else if (type == "void") {
+        return VOID;
     } else {
         return ERROR;
+    }
+}
+
+std::string SemanticCube::getStringFromType(const Type &type) {
+    if (type == INT) {
+        return "int";
+    } else if (type == FLOAT) {
+        return "float";
+    } else if (type == VOID) {
+        return "void";
+    } else {
+        return "error";
+    }
+}
+
+Type SemanticCube::getTypeFromConstant(const std::string &constant) {
+    if (constant.find('.') != std::string::npos) {
+        return FLOAT;
+    } else {
+        return INT;
     }
 }
