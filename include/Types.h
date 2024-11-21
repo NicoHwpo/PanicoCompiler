@@ -7,7 +7,8 @@ enum Type {
     FLOAT,
     VOID,
     ERROR,
-    BOOL
+    BOOL,
+    STRING
 };
 
 #endif // TYPES_H
