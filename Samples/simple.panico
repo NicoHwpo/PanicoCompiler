@@ -1,4 +1,4 @@
-program testing_functions;
+program simple;
 
 vars{
     a, b: int;
@@ -20,6 +20,7 @@ void dos(a:int, b:int, g:float) {
     uno(i * 2);
     print(a);
     i = i - 1;
+    print(i);
   };
 };
 

@@ -1,0 +1,26 @@
+program sum;
+
+vars{
+    i : int;
+}
+
+void twoSum(target : int){
+    vars{
+        i:int;
+        sum: int;
+    }
+    i = 0;
+    while(i < 100){
+        i = i + 1;
+        sum = i + 1;
+        if (sum == target){
+            print("target matched when i is equal to: ", i);
+        };
+    };
+};
+
+start
+{
+    twoSum(10);
+}
+end
