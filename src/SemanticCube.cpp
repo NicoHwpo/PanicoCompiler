@@ -29,25 +29,30 @@ void SemanticCube::initializeCube() {
     cube["1/1"] = FLOAT;
     // comparisons
         // less than
-    cube["0<0"] = BOOL;
-    cube["0<1"] = BOOL;
-    cube["1<0"] = BOOL;
-    cube["1<1"] = BOOL;
+    cube["0<0"] = INT;
+    cube["0<1"] = INT;
+    cube["1<0"] = INT;
+    cube["1<1"] = INT;
         // greater than
-    cube["0>0"] = BOOL;
-    cube["0>1"] = BOOL;
-    cube["1>0"] = BOOL;
-    cube["1>1"] = BOOL;
+    cube["0>0"] = INT;
+    cube["0>1"] = INT;
+    cube["1>0"] = INT;
+    cube["1>1"] = INT;
         // equal to
-    cube["0==0"] = BOOL;
-    cube["0==1"] = BOOL;
-    cube["1==0"] = BOOL;
-    cube["1==1"] = BOOL;
+    cube["0==0"] = INT;
+    cube["0==1"] = INT;
+    cube["1==0"] = INT;
+    cube["1==1"] = INT;
         // not equal to
-    cube["0!=0"] = BOOL;
-    cube["0!=1"] = BOOL;
-    cube["1!=0"] = BOOL;
-    cube["1!=1"] = BOOL;
+    cube["0!=0"] = INT;
+    cube["0!=1"] = INT;
+    cube["1!=0"] = INT;
+    cube["1!=1"] = INT;
+    // assignments
+    cube["0=0"] = INT;
+    cube["0=1"] = ERROR;
+    cube["1=0"] = ERROR;
+    cube["1=1"] = FLOAT;
 }
 
 Type SemanticCube::getResultType(Type &type1, Type &type2, const std::string &op) {
@@ -62,5 +67,23 @@ Type SemanticCube::getTypeFromString(const std::string &type) {
         return FLOAT;
     } else {
         return ERROR;
+    }
+}
+
+std::string SemanticCube::getStringFromType(const Type &type) {
+    if (type == INT) {
+        return "int";
+    } else if (type == FLOAT) {
+        return "float";
+    } else {
+        return "error";
+    }
+}
+
+Type SemanticCube::getTypeFromConstant(const std::string &constant) {
+    if (constant.find('.') != std::string::npos) {
+        return FLOAT;
+    } else {
+        return INT;
     }
 }
