@@ -22,7 +22,8 @@ void printQuadruplesAsAddresses(const std::vector<Quadruple> &quadruples) {
 }
 
 void genOutputObjFile(CustomVisitor &visitor) {
-    std::ofstream out("output.obj");
+    std::string programName = visitor.functionDirectory.getMainFunction()->name;
+    std::ofstream out("./Output/" + programName + ".obj");
     if (!out.is_open()) {
         std::cerr << "Could not open output file." << std::endl;
         return;
@@ -46,11 +47,23 @@ void genOutputObjFile(CustomVisitor &visitor) {
     std::unordered_map<std::string, FunctionInfo> *functionDirectory = visitor.functionDirectory.getFunctionDirectory();
     for (const auto &function : *functionDirectory) {
         FunctionInfo const &funcInfo = function.second;
-        out << funcInfo.name << " " << visitor.semanticCube.getStringFromType(funcInfo.returnType) << " " << funcInfo.startAddress << " " << funcInfo.numVars << " " << funcInfo.numParams << std::endl;
+        int localIntBase = 3000, localFloatBase = 4000;
+        if (funcInfo.name == visitor.functionDirectory.getMainFunction()->name) {
+            localIntBase = 1000;
+            localFloatBase = 2000;
+        }
+        out << funcInfo.name << " " << 
+            visitor.semanticCube.getStringFromType(funcInfo.returnType) << " " << 
+            funcInfo.startAddress << " " << 
+            localIntBase << " " <<
+            localFloatBase << " " <<
+            funcInfo.numVars << " " << 
+            funcInfo.numParams << std::endl;
     }
 
     // Write quadruples to output file
     out << std::endl << "# Quadruples" << std::endl;
+    out << "QUADRUPLES" << std::endl;
     for (size_t i = 0; i < visitor.quadruples.size(); i++) {
         const Quadruple &quad = visitor.quadruples[i];
         std::string arg1 = std::to_string(quad.arg1.address);

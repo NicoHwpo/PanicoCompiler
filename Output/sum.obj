@@ -1,0 +1,33 @@
+# Constant Table
+CONSTANTS
+7000 0
+7001 100
+7003 10
+7002 1
+9000 "target matched when i is equal to: "
+
+# Function Directory
+FUNCTIONS
+twoSum void 1 3000 4000 6 1
+sum void 14 1000 2000 1 0
+
+# Quadruples
+QUADRUPLES
+0: GOTO -1 -1 14
+1: = 7000 -1 3001
+2: < 3001 7001 3003
+3: GOTOF 3003 -1 13
+4: + 3001 7002 3004
+5: = 3004 -1 3001
+6: + 3001 7002 3005
+7: = 3005 -1 3002
+8: == 3002 3000 3006
+9: GOTOF 3006 -1 12
+10: PRINT -1 -1 9000
+11: PRINT -1 -1 3001
+12: GOTO -1 -1 2
+13: ENDFUNC -1 -1 -1
+14: ERA twoSum -1 -1
+15: PARAM 7003 -1 3000
+16: GOSUB twoSum -1 1
+17: HALT -1 -1 -1

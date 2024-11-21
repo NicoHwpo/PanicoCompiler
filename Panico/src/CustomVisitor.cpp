@@ -449,7 +449,7 @@ antlrcpp::Any CustomVisitor::visitImpr(PanicoParser::ImprContext *ctx) {
     // pop the type
     Type printType = typeStack.top(); typeStack.pop();
     // generate quadruple to print the operand
-    Quadruple quad = {{"PRINT", -1}, {printOperand, getAddress(printOperand, printType)}, {"nil", -1}, {"nil", -1}};
+    Quadruple quad = {{"PRINT", -1}, {"nil", -1}, {"nil", -1}, {printOperand, getAddress(printOperand, printType)}};
     quadruples.push_back(quad);
     // generateQuadruple("PRINT", printOperand, "nil", "nil");
     return nullptr;
