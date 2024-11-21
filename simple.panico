@@ -1,12 +1,35 @@
-programa example;
+program testing_functions;
 
-vars {
-    a, b : int;
-    c, d : float;
+vars{
+    a, b: int;
+    f: float;
 }
 
-inicio {
-    a = b + 4;
-    print("Hello, world");
+void uno(a:int) {
+  a = a + b * a;
+  print(a, b, a + b);
+};
+
+void dos(a:int, b:int, g:float) {
+  vars{
+    i: int;
+  }
+  i = b;
+  while (i > 0) {
+    a = a + b * i + b;
+    uno(i * 2);
+    print(a);
+    i = i - 1;
+  };
+};
+
+start
+{
+  a = 3;
+  b = a + 1;
+  print(a,b);
+  f = 3.14;
+  dos(a+b*2, b, f*3);
+  print(a,b,f*2+1);
 }
-fin
+end

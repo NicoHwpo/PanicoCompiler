@@ -1,4 +1,4 @@
-programa patito;
+program patito;
 
 vars {
     a, b, c : int; 
@@ -39,9 +39,9 @@ void printSum(num3 : int, num4 : int){
     print("se termina");
 };
 
-inicio{
+start{
     a = 10;
     b = 20;
     printSum(a, b);
 
-}fin
+}end
