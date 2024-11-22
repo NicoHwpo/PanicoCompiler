@@ -1,0 +1,12 @@
+program easy;
+vars{ 
+    i : int; 
+    a : int;
+}
+
+start {
+    i = 10*9;
+    a = i+12*2;
+    print("la multiplicacion da como resultado: ", a);
+    print("se termino el programa");
+} end

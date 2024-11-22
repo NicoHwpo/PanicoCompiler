@@ -1,0 +1,27 @@
+# Constant Table
+CONSTANTS
+7000 10
+7001 9
+7002 12
+7003 2
+9000 "la multiplicacion da como resultado: "
+9001 "se termino el programa"
+
+# Function Directory
+FUNCTIONS
+easy void 1 1000 2000 5 0
+
+# Quadruples
+QUADRUPLES
+0: GOTO -1 -1 1
+1: * 7000 7001 1002
+2: = 1002 -1 1000
+3: * 7002 7003 1003
+4: + 1000 1003 1004
+5: = 1004 -1 1001
+6: PRINT -1 -1 9000
+7: PRINT -1 -1 1001
+8: ENDPRINT -1 -1 -1
+9: PRINT -1 -1 9001
+10: ENDPRINT -1 -1 -1
+11: HALT -1 -1 -1
