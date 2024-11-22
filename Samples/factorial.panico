@@ -1,0 +1,24 @@
+program factorial;
+
+vars{
+    num, result: int;
+}
+
+void calculateFactorial(n:int){
+    vars{
+        i: int;
+    }
+    result = 1;
+    i = 1;
+
+    while(i < n+1){
+        result = result * i;
+        i = i + 1;
+    };
+};
+
+start{
+    num = 5;
+    calculateFactorial(num);
+    print("El factorial de ", num, " es: ", result);
+}end

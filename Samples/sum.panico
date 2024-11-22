@@ -1,9 +1,5 @@
 program sum;
 
-vars{
-    i : int;
-}
-
 void twoSum(target : int){
     vars{
         i:int;

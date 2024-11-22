@@ -423,6 +423,8 @@ antlrcpp::Any CustomVisitor::visitImprime(PanicoParser::ImprimeContext *ctx) {
     for (size_t i = 0; i < ctx->impr().size(); i++) {
         visit(ctx->impr(i));
     }
+    Quadruple quad = {{"ENDPRINT", -1}, {"nil", -1}, {"nil", -1}, {"nil", -1}};
+    quadruples.push_back(quad);
     return nullptr;
 }
 

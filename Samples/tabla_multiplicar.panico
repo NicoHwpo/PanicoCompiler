@@ -1,0 +1,23 @@
+program tabla_multiplicar;
+
+vars{
+    num: int;
+}
+
+void printTable(n:int){
+    vars{
+        i, result: int;
+    }
+    i = 1;
+
+    while(i < 10+1){
+        result = n * i;
+        print(n, " x ", i, " = ", result);
+        i = i + 1;
+    };
+};
+
+start{
+    num = 7;
+    printTable(num);
+}end

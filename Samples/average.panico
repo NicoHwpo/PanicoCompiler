@@ -1,0 +1,27 @@
+program average;
+
+vars{
+    promedio: float;
+}
+
+void calculateAverage(){
+    vars{
+        i, sum, count: int;
+        numbers: int;
+    }
+    numbers = 5;
+    sum = 0;
+    count = 5;
+
+    i = 1;
+    while(i < count){
+        sum = sum + i;
+        i = i + 1;
+    };
+    promedio = sum / count;
+};
+
+start{
+    calculateAverage();
+    print("El promedio es: ", promedio);
+}end
