@@ -1,0 +1,37 @@
+# Constant Table
+CONSTANTS
+7000 1
+7001 10
+7002 7
+9000 " x "
+9001 " = "
+
+# Function Directory
+FUNCTIONS
+printTable void 1 3000 4000 6 1
+tabla_multiplicar void 17 1000 2000 1 0
+
+# Quadruples
+QUADRUPLES
+0: GOTO -1 -1 17
+1: = 7000 -1 3001
+2: + 7001 7000 3003
+3: < 3001 3003 3004
+4: GOTOF 3004 -1 16
+5: * 3000 3001 3005
+6: = 3005 -1 3002
+7: PRINT -1 -1 3000
+8: PRINT -1 -1 9000
+9: PRINT -1 -1 3001
+10: PRINT -1 -1 9001
+11: PRINT -1 -1 3002
+12: ENDPRINT -1 -1 -1
+13: + 3001 7000 3006
+14: = 3006 -1 3001
+15: GOTO -1 -1 2
+16: ENDFUNC -1 -1 -1
+17: = 7002 -1 1000
+18: ERA printTable -1 -1
+19: PARAM 1000 -1 3000
+20: GOSUB printTable -1 1
+21: HALT -1 -1 -1

@@ -1,4 +1,4 @@
-program patito;
+program complex;
 
 vars {
     a, b, c : int; 

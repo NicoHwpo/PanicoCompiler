@@ -1,0 +1,33 @@
+program fibonacci;
+
+vars{
+    n: int;
+    fib: int;
+}
+
+void calculateFibonacci(num:int){
+    vars{
+        a, b, temp: int;
+    }
+    a = 0;
+    b = 1;
+
+    if(num == 0){
+        fib = a;
+    }else{
+        num = num - 1;
+        while(num > 0){
+            temp = a + b;
+            a = b;
+            b = temp;
+            num = num - 1;
+        };
+        fib = b;
+    };
+};
+
+start{
+    n = 10;
+    calculateFibonacci(n);
+    print("Fibonacci de ", n, " es: ", fib);
+}end
