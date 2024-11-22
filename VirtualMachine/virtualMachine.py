@@ -3,7 +3,8 @@ from typing import Dict, List, Any, Union
 
 class MemoryStack:
     def __init__(self):
-        self.memory_stack: List[Dict[int, Any]] = [{}]
+        # Initialize with global memory frame
+        self.memory_stack: List[Dict[int, Any]] = [{}]  # First frame is global
     
     def push_frame(self):
         """Push a new memory frame for a function call."""
@@ -11,19 +12,42 @@ class MemoryStack:
     
     def pop_frame(self):
         """Remove the top memory frame."""
-        if len(self.memory_stack) > 1:
+        if len(self.memory_stack) > 1:  # Keep at least global frame
             self.memory_stack.pop()
     
     def get_value(self, address: int) -> Any:
-        """Retrieve value from the most recent frame containing the address."""
+        """
+        Retrieve value by checking all frames from most recent to global.
+        This ensures we can access both local and global variables.
+        """
+        # Check each frame from top (most recent) to bottom (global)
         for frame in reversed(self.memory_stack):
             if address in frame:
                 return frame[address]
         return None
-    
+
     def set_value(self, address: int, value: Any):
-        """Set value in the most recent frame."""
+        """
+        Set value in the appropriate memory frame.
+        If the address exists in any frame, update it there.
+        Otherwise, set it in the current frame.
+        """
+        # First check if this address already exists in any frame
+        for frame in reversed(self.memory_stack):
+            if address in frame:
+                frame[address] = value
+                return
+        
+        # If not found in any frame, set in current frame
         self.memory_stack[-1][address] = value
+
+    def get_current_frame(self) -> Dict[int, Any]:
+        """Get the current (most recent) memory frame."""
+        return self.memory_stack[-1]
+
+    def get_global_frame(self) -> Dict[int, Any]:
+        """Get the global (bottom) memory frame."""
+        return self.memory_stack[0]
 
 class VirtualMachine:
     def __init__(self, obj_file_path: str):
@@ -31,7 +55,8 @@ class VirtualMachine:
         self.memory_stack = MemoryStack()
         self.constants: Dict[int, Any] = {}
         self.functions: Dict[str, Dict[str, Any]] = {}
-        
+        self.global_memory: Dict[int, Any] = {}  # To track global variables
+        self.print_buffer = []
         # Execution context
         self.instruction_pointer = 0
         self.quadruples: List[List[str]] = []
@@ -91,22 +116,38 @@ class VirtualMachine:
                     quad_parts = parts[1].split()
                     self.quadruples.append(quad_parts)
     
+    def is_global_address(self, address: int) -> bool:
+        """
+        Determine if an address belongs to global memory space.
+        You might want to adjust these ranges based on your memory segmentation
+        """
+        # Example: assuming globals are in range 1000-2999
+        return 1000 <= address <= 2999
+
     def get_value(self, address: Union[int, str]) -> Any:
         """Retrieve value from constants or memory stack."""
         if address == '-1':
             return None
         
         address = int(address)
+        
+        # Check constants first
         if address in self.constants:
             return self.constants[address]
         
+        # Get value from memory stack
         value = self.memory_stack.get_value(address)
         return value if value is not None else address
     
     def set_value(self, address: int, value: Any):
-        """Store a value in memory stack."""
-        self.memory_stack.set_value(address, value)
-    
+        """Store a value in the appropriate memory location."""
+        if self.is_global_address(address):
+            # If it's a global variable, always set it in the global frame
+            self.memory_stack.get_global_frame()[address] = value
+        else:
+            # Otherwise, set it in the current frame
+            self.memory_stack.get_current_frame()[address] = value
+            
     def execute(self):
         """Execute the quadruples."""
         while self.instruction_pointer < len(self.quadruples):
@@ -123,7 +164,7 @@ class VirtualMachine:
             
             elif op == 'PRINT':
                 value = self.get_value(quad[3])
-                print(value)
+                self.print_buffer.append(str(value))
             
             elif op == '=':
                 value = self.get_value(quad[1])
@@ -177,10 +218,16 @@ class VirtualMachine:
                 # Prepare a new memory frame for function call
                 self.memory_stack.push_frame()
             
+            elif op == 'MINUS':
+                value = self.get_value(quad[1])
+                self.set_value(int(quad[3]), -value)
+            
             elif op == 'PARAM':
                 # Pass parameters to the new memory frame
                 param_value = self.get_value(quad[1])
-                self.set_value(int(quad[3]), param_value)
+                target_address = int(quad[3])
+                # Parameters always go in the current frame
+                self.memory_stack.get_current_frame()[target_address] = param_value
             
             elif op == 'GOSUB':
                 # Get function name and its start address
@@ -197,6 +244,11 @@ class VirtualMachine:
                 if self.call_stack:
                     self.instruction_pointer = self.call_stack.pop()
                     self.memory_stack.pop_frame()
+            
+            elif op == 'ENDPRINT':
+                # Print the buffer and clear it
+                print(''.join(self.print_buffer))
+                self.print_buffer.clear()
             
             elif op == 'HALT':
                 break
