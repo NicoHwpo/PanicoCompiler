@@ -3,7 +3,6 @@
 <img src="Docs/panicoCompiler.webp" alt="panicoCompiler" width="200"/>
 </div>
 
-**Desarrollo de aplicaciones avanzadas de ciencias computacionales (Gpo 502\)**
 
 Nicolás Aguirre Villafañe A00832772
 
