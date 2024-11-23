@@ -1,0 +1,21 @@
+program factorialRecursive;
+
+vars{
+    num, result: int;
+}
+
+void calculateFactorial(n: int){
+    if(n < 2) {
+        result = 1; 
+    } else {
+        calculateFactorial(n - 1);
+        result = n * result;
+    };
+};
+
+start{
+    num = 100; 
+    result = 1;
+    calculateFactorial(num);
+    print("El factorial de ", num, " es: ", result);
+} end

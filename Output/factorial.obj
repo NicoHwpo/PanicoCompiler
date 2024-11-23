@@ -1,36 +1,41 @@
 # Constant Table
 CONSTANTS
-7000 1
-7001 5
+7000 0
+7002 100
+7001 1
 9000 "El factorial de "
 9001 " es: "
 
 # Function Directory
 FUNCTIONS
-calculateFactorial void 1 3000 4000 5 1
-factorial void 12 1000 2000 2 0
+calculateFactorial void 1 3000 4000 4 1
+factorial void 15 1000 2000 2 0
 
 # Quadruples
 QUADRUPLES
-0: GOTO -1 -1 12
-1: = 7000 -1 1001
-2: = 7000 -1 3001
-3: + 3000 7000 3002
-4: < 3001 3002 3003
-5: GOTOF 3003 -1 11
-6: * 1001 3001 3004
-7: = 3004 -1 1001
-8: + 3001 7000 3005
-9: = 3005 -1 3001
-10: GOTO -1 -1 3
-11: ENDFUNC -1 -1 -1
-12: = 7001 -1 1000
-13: ERA calculateFactorial -1 -1
-14: PARAM 1000 -1 3000
-15: GOSUB calculateFactorial -1 1
-16: PRINT -1 -1 9000
-17: PRINT -1 -1 1000
-18: PRINT -1 -1 9001
-19: PRINT -1 -1 1001
-20: ENDPRINT -1 -1 -1
-21: HALT -1 -1 -1
+0: GOTO -1 -1 15
+1: == 3000 7000 3001
+2: GOTOF 3001 -1 4
+3: = 7001 -1 1001
+4: == 3000 7001 3002
+5: GOTOF 3002 -1 8
+6: = 7001 -1 1001
+7: GOTO -1 -1 14
+8: ERA calculateFactorial -1 -1
+9: - 3000 7001 3003
+10: PARAM 3003 -1 3000
+11: GOSUB calculateFactorial -1 1
+12: * 3000 1001 3004
+13: = 3004 -1 1001
+14: ENDFUNC -1 -1 -1
+15: = 7002 -1 1000
+16: = 7001 -1 1001
+17: ERA calculateFactorial -1 -1
+18: PARAM 1000 -1 3000
+19: GOSUB calculateFactorial -1 1
+20: PRINT -1 -1 9000
+21: PRINT -1 -1 1000
+22: PRINT -1 -1 9001
+23: PRINT -1 -1 1001
+24: ENDPRINT -1 -1 -1
+25: HALT -1 -1 -1

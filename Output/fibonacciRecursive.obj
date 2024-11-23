@@ -1,0 +1,45 @@
+# Constant Table
+CONSTANTS
+7000 2
+7001 1
+7002 30
+9000 "Fibonacci de "
+9001 " es: "
+
+# Function Directory
+FUNCTIONS
+calculateFibonacci void 1 3000 4000 6 1
+fibonacciRecursive void 20 1000 2000 2 0
+
+# Quadruples
+QUADRUPLES
+0: GOTO -1 -1 20
+1: < 3000 7000 3003
+2: GOTOF 3003 -1 5
+3: = 3000 -1 1000
+4: GOTO -1 -1 19
+5: - 3000 7001 3004
+6: = 3004 -1 3001
+7: - 3000 7000 3005
+8: = 3005 -1 3002
+9: ERA calculateFibonacci -1 -1
+10: PARAM 3001 -1 3000
+11: GOSUB calculateFibonacci -1 1
+12: = 1000 -1 3001
+13: ERA calculateFibonacci -1 -1
+14: PARAM 3002 -1 3000
+15: GOSUB calculateFibonacci -1 1
+16: = 1000 -1 3002
+17: + 3001 3002 3006
+18: = 3006 -1 1000
+19: ENDFUNC -1 -1 -1
+20: = 7002 -1 1001
+21: ERA calculateFibonacci -1 -1
+22: PARAM 1001 -1 3000
+23: GOSUB calculateFibonacci -1 1
+24: PRINT -1 -1 9000
+25: PRINT -1 -1 1001
+26: PRINT -1 -1 9001
+27: PRINT -1 -1 1000
+28: ENDPRINT -1 -1 -1
+29: HALT -1 -1 -1

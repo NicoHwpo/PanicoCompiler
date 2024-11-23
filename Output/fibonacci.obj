@@ -1,7 +1,7 @@
 # Constant Table
 CONSTANTS
 7000 0
-7002 10
+7002 10000
 7001 1
 9000 "Fibonacci de "
 9001 " es: "

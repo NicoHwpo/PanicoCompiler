@@ -4,6 +4,7 @@ vars{
     num, result: int;
 }
 
+
 void calculateFactorial(n:int){
     vars{
         i: int;
